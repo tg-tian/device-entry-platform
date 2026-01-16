@@ -18,11 +18,6 @@ export class MqttACMapper implements DeviceMapper {
     this.cfg = config;
     this.client = mqtt.connect(this.cfg.communication.baseUrl);
   }
-  match(rawDevice: any): boolean {
-    return rawDevice.provider === this.provider
-      && rawDevice.category === this.metaModel.category
-      && rawDevice.model === this.deviceModel;
-  }
   
   mapProperties(rawProps: any): Record<string, any> {
     const mapped: Record<string, any> = {};

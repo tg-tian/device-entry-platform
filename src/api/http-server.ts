@@ -1,5 +1,7 @@
 import express from 'express'
 import http from 'http'
+import fs from 'fs'
+import path from 'path'
 import { DeviceDAO } from '../dao/device-dao'
 import { ShadowDAO } from '../dao/shadow-dao'
 import { ProviderDAO } from '../dao/provider-dao'

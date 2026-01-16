@@ -3,24 +3,18 @@ import { IoTAdapter } from '../iot-adapter';
 import { ProviderConfig } from '../../domain/provider-config';
 import { UnifiedEvent } from '../../domain/unified-event';
 import { DeviceMapper} from '../device-mapper';
-import { MqttThermostatMapper } from '../mappers/mqtt-thermostat-mapper';
-import { MqttACMapper } from '../mappers/mqtt-ac-mapper';
+import { MapperLoader } from '../mapper-loader';
 
 export class MqttAdapter extends IoTAdapter {
   private client: mqtt.MqttClient | undefined;
   private config: ProviderConfig;
   private deviceMappers: Map<string, DeviceMapper | null> = new Map();
+  private mapperLoader: MapperLoader;
 
   constructor(config: ProviderConfig) {
     super(config.provider);
     this.config = config;
-  }
-
-  registerMapper(){
-    const t = new MqttThermostatMapper(this.config);
-    const a = new MqttACMapper(this.config);
-    this.mappers.push(t);
-    this.mappers.push(a);
+    this.mapperLoader = new MapperLoader();
   }
 
   init(){
@@ -47,10 +41,9 @@ export class MqttAdapter extends IoTAdapter {
     this.client.on('message', (topic, payload) => {
       this.handleMessage(topic, payload);
     });
-    this.registerMapper();
   }
 
-   private handleMessage(topic: string, payload: Buffer) {
+   private async handleMessage(topic: string, payload: Buffer) {
     try {
       const parts = topic.split('/');
       if (parts.length < 3 || parts[0] !== 'devices') {
@@ -60,7 +53,7 @@ export class MqttAdapter extends IoTAdapter {
       const deviceId = parts[1];
       const messageType = parts[2];
       if (messageType === 'config')
-        this.discoverDevice(deviceId,payload);
+        await this.discoverDevice(deviceId,payload);
       else if (messageType === 'property')
         this.updateDeviceStates(deviceId,payload);
     } catch (e) {
@@ -68,20 +61,18 @@ export class MqttAdapter extends IoTAdapter {
     }
   }
 
-  discoverDevice(deviceId: string, payload: Buffer){
+  async discoverDevice(deviceId: string, payload: Buffer){
       const msgStr = payload.toString();
       let raw = JSON.parse(msgStr);
-      let selectedMapper = null;
-      for (const mapper of this.mappers) {
-        if (mapper.match(raw)) {
-            selectedMapper = mapper;
-            raw = {...raw, isAccessible: true, metaModel: mapper.metaModel};
-            this.deviceMappers.set(deviceId, selectedMapper);
-            break;
-          }
-      }
-      if (!selectedMapper) 
+      let selectedMapper = await this.mapperLoader.loadMapper(raw, this.config);
+      
+      if (selectedMapper) {
+        this.deviceMappers.set(deviceId, selectedMapper);
+        raw = {...raw, isAccessible: true, metaModel: selectedMapper.metaModel};
+      } else {
         raw = {...raw, isAccessible: false};  
+      }
+      
       const event: UnifiedEvent = {
         type: "config",
         deviceId: deviceId,
@@ -111,8 +102,5 @@ export class MqttAdapter extends IoTAdapter {
         return;
       (mapper as any)[command.action](command.deviceId, command.params);
   }
-
-
-
   
 }

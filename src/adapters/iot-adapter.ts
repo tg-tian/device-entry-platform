@@ -3,14 +3,12 @@ import { UnifiedEvent } from '../domain/unified-event';
 
 export abstract class IoTAdapter {
   protected eventCallback: (event: UnifiedEvent) => void = () => {};
-  protected mappers: DeviceMapper[] = [];
   public readonly provider: string;
 
   constructor(provider: string) {
     this.provider = provider;
   }
 
-  abstract registerMapper(): void
   abstract init():void;
   //abstract discoverDevices():void;
   //abstract registerDevice(device : any):void;
