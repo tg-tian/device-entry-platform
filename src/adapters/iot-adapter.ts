@@ -1,4 +1,3 @@
-import { DeviceMapper } from './device-mapper';
 import { UnifiedEvent } from '../domain/unified-event';
 
 export abstract class IoTAdapter {

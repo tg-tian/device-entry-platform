@@ -2,20 +2,33 @@ import axios from 'axios';
 import * as ts from 'typescript';
 import * as vm from 'vm';
 import * as mqtt from 'mqtt';
-import * as DomainModel from '../domain/model';
 import { ProviderConfig } from '../domain/provider-config';
 import { DeviceMapper } from './device-mapper';
+
+import { BaseDeviceModel } from '../domain/model';
 
 export class MapperLoader {
 
   async loadMapper(rawDevice: any, config: ProviderConfig): Promise<DeviceMapper | null> {
     const port = process.env.PORT || 8080;
-    const { provider, category, model } = rawDevice;
-    const url = `http://localhost:${port}/device-library/mapper?provider=${provider}&category=${category}&deviceModel=${model}`;
+    const { provider, model } = rawDevice;
+    const mapperUrl = `http://localhost:${port}/device-library/mapper?provider=${provider}&deviceModel=${model}`;
     
     try {
-      const response = await axios.get(url, { responseType: 'text' });
-      const tsCode = response.data;
+
+      const mapperResponse = await axios.get(mapperUrl, { responseType: 'json' });
+      const { content, deviceTypeName } = mapperResponse.data;
+
+      if (!content || !deviceTypeName) {
+        console.error('[MapperLoader] Invalid mapper response:', mapperResponse.data);
+        return null;
+      }
+
+      const modelUrl = `http://localhost:${port}/api/v1/device-types/model/${deviceTypeName}`;
+      const modelResponse = await axios.get(modelUrl, { responseType: 'json' });
+
+      const tsCode = content;
+      const deviceModel: BaseDeviceModel = modelResponse.data.model;
 
       if (!tsCode) return null;
 
@@ -29,7 +42,8 @@ export class MapperLoader {
         require: (moduleName: string) => {
           if (moduleName === 'mqtt') return mqtt;
           if (moduleName.endsWith('device-mapper')) return {}; // Interface only
-          if (moduleName.endsWith('provider-config')) return {}; // Interface only
+          if (moduleName.endsWith('provider-config')) return {};
+          if (moduleName.endsWith('model')) return {};
           console.warn(`[MapperLoader] Missing dependency: ${moduleName}`);
           return {};
         },
@@ -48,12 +62,12 @@ export class MapperLoader {
         const MapperClass = (sandbox.exports as any)[exportedKeys[0]];
         if (typeof MapperClass === 'function') {
            console.log(`[MapperLoader] Dynamically loaded mapper: ${exportedKeys[0]}`);
-           return new MapperClass(config);
+           return new MapperClass(config, deviceModel);
         }
       }
 
     } catch (error) {
-      console.error('[MapperLoader] Failed to load mapper:', error);
+      console.error('[MapperLoader] Failed to load mapper or model:', error);
     }
 
     return null;

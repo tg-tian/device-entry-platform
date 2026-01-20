@@ -1,7 +1,7 @@
 import mqtt from 'mqtt';
-import { DeviceMapper} from '../device-mapper';
-import { ThermostatModel } from '../../domain/model';
-import { ProviderConfig } from '../../domain/provider-config';
+import { DeviceMapper} from './src/adapters/device-mapper';
+import { ThermostatModel } from './src/domain/model';
+import { ProviderConfig } from './src/domain/provider-config';
 
 export class MqttThermostatMapper implements DeviceMapper {
   metaModel = ThermostatModel;
