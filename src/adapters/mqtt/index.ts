@@ -56,6 +56,8 @@ export class MqttAdapter extends IoTAdapter {
         await this.discoverDevice(deviceId,payload);
       else if (messageType === 'property')
         this.updateDeviceStates(deviceId,payload);
+      else
+        this.reportEvent(deviceId,payload);
     } catch (e) {
       console.error('[MqttAdapter] Failed to process message', e);
     }
@@ -96,6 +98,21 @@ export class MqttAdapter extends IoTAdapter {
       this.eventCallback!(event);
   }
 
+  reportEvent(deviceId: string, payload: Buffer){
+      const msgStr = payload.toString();
+      let raw = JSON.parse(msgStr);
+      const mapper = this.deviceMappers.get(deviceId);
+      if (!mapper)
+        return;
+      raw = mapper.mapEvents(raw);
+      const event: UnifiedEvent = {
+        type: "event",
+        deviceId: deviceId,
+        payload: raw
+      };
+      this.eventCallback!(event);
+  }
+  
   sendDeviceCommand(command : any){
       const mapper = this.deviceMappers.get(command.deviceId);
       if (!mapper)

@@ -4,8 +4,8 @@ export interface DeviceMapper {
   metaModel: BaseDeviceModel;
   deviceModel: string;
   provider: string;
-  propertyMap: Record<string, string>;
+  propertyMap: Record<string, any>;
   mapProperties(rawProps: any): Record<string, any>;
-  mapEvent(rawEvent: any): any | null;
+  mapEvents(rawEvent: any): Record<string, any>;
  
 }

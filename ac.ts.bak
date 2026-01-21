@@ -13,6 +13,10 @@ export const ACModel: BaseDeviceModel = {
     setMode: { arguments: { mode: { type: 'enum', enumValues: ['cool', 'heat', 'fan', 'dry', 'auto'] } } },
     setTemperature: { arguments: { temp: { type: 'number', min: 16, max: 30 } } },
   },
-  events: {},
+  events: {
+    error: { level: 'error', fields: { code: { type: 'string' }, message: { type: 'string' } }, timestamp: { type: 'number' } },
+    filterAlert: { level: 'warning', fields: { hoursUsed: { type: 'number' } }, timestamp: { type: 'number' } },
+    compressorStatus: { level: 'info', fields: { status: { type: 'enum', enumValues: ['on', 'off', 'defrosting'] } }, timestamp: { type: 'number' } }
+  },
   extensions: {}
 };

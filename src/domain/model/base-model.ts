@@ -17,6 +17,7 @@ export interface EventDefinition {
   fields?: Record<string, PropertyDefinition>;
   level?: "info" | "warning" | "error";
   description?: string;
+  timestamp?: PropertyDefinition;
 }
 
 export interface BaseDeviceModel {

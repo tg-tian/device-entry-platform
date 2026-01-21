@@ -14,10 +14,14 @@ export function startWsServer(dm: DeviceManager, server: http.Server) {
     const updatedHandler = (payload: any) => {
       ws.send(JSON.stringify({ topic: 'device.updated', data: payload }))
     }
+    const eventHandler = (payload: any) => {
+      ws.send(JSON.stringify({ topic: 'device.event', data: payload }))
+    }
 
     dm.on('device.discovery', discoveryHandler)
     dm.on('device.updated', updatedHandler)
-  
+    dm.on('device.event', eventHandler)
+    
     ws.on('close', async () => {
 
       await dm.flushNow()
