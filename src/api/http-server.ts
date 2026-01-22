@@ -24,6 +24,15 @@ export function startHttpServer(port: number, dm: DeviceManager) {
     res.json(devices)
   })
 
+  app.get('/devices/by-model', async (req, res) => {
+    const modelName = req.query.modelName as string
+    if (!modelName) {
+      return res.status(400).json({ message: 'Missing modelName query parameter' })
+    }
+    const devices = await deviceDAO.getDevicesByModelName(modelName)
+    res.json(devices)
+  })
+
   app.get('/devices/:id', async (req, res) => {
     const d = await deviceDAO.getDevice(req.params.id)
     if (!d) return res.status(404).json({ message: 'not found' })

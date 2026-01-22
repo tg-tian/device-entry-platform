@@ -31,4 +31,9 @@ export class DeviceDAO {
     const devices = await DeviceModel.find().lean();
     return devices as unknown as Device[];
   }
+
+  async getDevicesByModelName(modelName: string): Promise<Device[]> {
+    const devices = await DeviceModel.find({ 'metaModel.modelName': modelName }).lean();
+    return devices as unknown as Device[];
+  }
 }
