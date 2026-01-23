@@ -24,7 +24,7 @@ export class MapperLoader {
         return null;
       }
 
-      const modelUrl = `${url}/api/v1/device-types/model/${deviceTypeName}`;
+      const modelUrl = `${url}/meta/v1/device-types/model/${deviceTypeName}`;
       const modelResponse = await axios.get(modelUrl, { responseType: 'json' });
 
       const tsCode = content;
