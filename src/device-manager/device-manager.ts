@@ -47,8 +47,8 @@ export class DeviceManager extends EventEmitter {
       this.emit('device.updated', shadow);
   }
 
-  async reportEvent(deviceId: string, payload: any): Promise<void> {
-    this.emit('device.event', { deviceId, payload });
+  async reportEvent(deviceId: string, payload: any, deviceModel?: string): Promise<void> {
+    this.emit('device.event', { deviceId, payload, deviceModel });
   }
 
   async sendDeviceCommand(command: any): Promise<void> {
@@ -75,8 +75,8 @@ export class DeviceManager extends EventEmitter {
       console.log(`[DeviceManager] Updating properties for ${deviceId}`, event.payload);
        this.updateDevice(deviceId, event.payload);
     } else if (event.type === 'event') {
-      console.log(`[DeviceManager] Reporting event for ${deviceId}`, event.payload);
-      this.reportEvent(deviceId, event.payload);
+      console.log(`[DeviceManager] Reporting event for ${deviceId}`, event);
+      this.reportEvent(deviceId, event.payload, event.deviceModel);
     }
   }
 
