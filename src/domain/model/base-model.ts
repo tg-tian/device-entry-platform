@@ -21,7 +21,8 @@ export interface EventDefinition {
 }
 
 export interface BaseDeviceModel {
-  modelName?: string;
+  modelId: string;
+  modelName: string;
   provider: string;
   category: string;
   

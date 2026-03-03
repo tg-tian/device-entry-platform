@@ -1,11 +1,10 @@
 import express from 'express'
 import http from 'http'
-import fs from 'fs'
-import path from 'path'
 import { DeviceDAO } from '../dao/device-dao'
 import { ShadowDAO } from '../dao/shadow-dao'
 import { ProviderDAO } from '../dao/provider-dao'
 import { DeviceManager } from '../device-manager/device-manager'
+import { model } from 'mongoose'
 
 export function startHttpServer(port: number, dm: DeviceManager) {
   const app = express()
@@ -25,11 +24,11 @@ export function startHttpServer(port: number, dm: DeviceManager) {
   })
 
   app.get('/devices/by-model', async (req, res) => {
-    const modelName = req.query.modelName as string
-    if (!modelName) {
-      return res.status(400).json({ message: 'Missing modelName query parameter' })
+    const modelId = req.query.modelId as string
+    if (!modelId) {
+      return res.status(400).json({ message: 'Missing modelId query parameter' })
     }
-    const devices = await deviceDAO.getDevicesByModelName(modelName)
+    const devices = await deviceDAO.getDevicesByModelId(modelId)
     res.json(devices)
   })
 
