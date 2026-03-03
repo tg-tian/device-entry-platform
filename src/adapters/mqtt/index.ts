@@ -108,7 +108,7 @@ export class MqttAdapter extends IoTAdapter {
       const event: UnifiedEvent = {
         type: "event",
         deviceId: deviceId,
-        deviceModel: mapper.metaModel.modelName,
+        deviceModel: mapper.metaModel.modelId,
         payload: raw
       };
       this.eventCallback!(event);
