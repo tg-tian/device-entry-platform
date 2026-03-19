@@ -12,7 +12,7 @@ export class MapperLoader {
   async loadMapper(rawDevice: any, config: ProviderConfig): Promise<DeviceMapper | null> {
     const url = process.env.MAPPER_LOADER_URL;
     const { provider, deviceModel } = rawDevice;
-    const mapperUrl = `${url}/device-library/mapper?provider=${provider}&deviceModel=${deviceModel}`;
+    const mapperUrl = `${url}/device/mapper?provider=${provider}&deviceModel=${deviceModel}`;
     
     try {
 
