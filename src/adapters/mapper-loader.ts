@@ -12,7 +12,7 @@ export class MapperLoader {
   async loadMapper(rawDevice: any, config: ProviderConfig): Promise<DeviceMapper | null> {
     const url = process.env.MAPPER_LOADER_URL;
     const { provider, deviceModel } = rawDevice;
-    const mapperUrl = `${url}/device/mapper?provider=${provider}&deviceModel=${deviceModel}`;
+    const mapperUrl = `${url}/device/mapper?provider=${provider}&deviceId=${deviceModel}`;
     
     try {
 
@@ -24,7 +24,7 @@ export class MapperLoader {
         return null;
       }
 
-      const modelUrl = `${url}/meta/v1/device-types/model/${modelId}`;
+      const modelUrl = `${url}/meta/device-models/${modelId}`;
       const modelResponse = await axios.get(modelUrl, { responseType: 'json' });
 
       const tsCode = content;
