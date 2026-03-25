@@ -19,7 +19,7 @@ jobs:
           script: |
             set -e
             cd /root/mte-device-entry-platform
-            git pull --ff-only origin master
+            git pull --ff-only git@code.gitlink.org.cn:ScenarioComputingOrientedLowCodeDev/mte-device-entry-platform.git master
             if [ -s "$HOME/.nvm/nvm.sh" ]; then . "$HOME/.nvm/nvm.sh"; fi
             export PATH="$PATH:/usr/local/bin:/usr/bin:/bin"
             pm2 startOrReload ecosystem.config.js --update-env
