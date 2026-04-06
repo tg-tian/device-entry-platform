@@ -2,8 +2,9 @@ import { EventEmitter } from 'events';
 import { AdapterFactory } from '../adapters/adapter-factory';
 import { ShadowManager } from './shadow/shadow-manager';
 import { InMemoryShadowManager } from './shadow/in-memory-shadow';
-import { DeviceShadow } from '../domain/device-shadow';
+import type { DeviceShadow } from '@lowcode/shared-contracts/device';
 import { UnifiedEvent } from '../domain/unified-event';
+import type { DeviceCommand } from '@lowcode/shared-contracts/device-command';
 import { ShadowDAO } from '../dao/shadow-dao';
 
 export class DeviceManager extends EventEmitter {
@@ -51,7 +52,7 @@ export class DeviceManager extends EventEmitter {
     this.emit('device.event', { deviceId, payload, deviceModel });
   }
 
-  async sendDeviceCommand(command: any): Promise<void> {
+  async sendDeviceCommand(command: DeviceCommand): Promise<void> {
     const deviceId = command.deviceId;
     if (!deviceId) return;
     let device = await this.shadowManager.get(deviceId);

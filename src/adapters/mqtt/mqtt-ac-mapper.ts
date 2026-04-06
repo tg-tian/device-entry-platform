@@ -1,7 +1,7 @@
 import mqtt from 'mqtt';
 import { DeviceMapper} from '../device-mapper';
-import { ProviderConfig } from '../../domain/provider-config';
-import { BaseDeviceModel } from '../../domain/model';
+import type { ProviderConfig } from '@lowcode/shared-contracts/provider-config';
+import type { BaseDeviceModel } from '@lowcode/shared-contracts/device-model';
 
 export class MqttACMapper implements DeviceMapper {
   metaModel : BaseDeviceModel;

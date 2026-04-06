@@ -1,4 +1,4 @@
-import { DeviceShadow } from '../../domain/device-shadow';
+import type { DeviceShadow } from '@lowcode/shared-contracts/device';
 
 export interface ShadowManager {
   get(deviceId: string): Promise<DeviceShadow | undefined>;

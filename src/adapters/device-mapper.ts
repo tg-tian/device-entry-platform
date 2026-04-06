@@ -1,4 +1,4 @@
-import { BaseDeviceModel } from '../domain/model';
+import type { BaseDeviceModel } from '@lowcode/shared-contracts/device-model';
 
 export interface DeviceMapper {
   metaModel: BaseDeviceModel;

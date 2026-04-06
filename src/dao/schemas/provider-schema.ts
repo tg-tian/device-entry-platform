@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { ProviderConfig } from '../../domain/provider-config';
+import type { ProviderConfig } from '@lowcode/shared-contracts/provider-config';
 
 interface IProviderConfig extends ProviderConfig, Document {}
 

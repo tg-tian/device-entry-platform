@@ -1,7 +1,8 @@
 import mqtt from 'mqtt';
 import { IoTAdapter } from '../iot-adapter';
-import { ProviderConfig } from '../../domain/provider-config';
+import type { ProviderConfig } from '@lowcode/shared-contracts/provider-config';
 import { UnifiedEvent } from '../../domain/unified-event';
+import type { DeviceCommand } from '@lowcode/shared-contracts/device-command';
 import { DeviceMapper} from '../device-mapper';
 import { MapperLoader } from '../mapper-loader';
 
@@ -114,7 +115,7 @@ export class MqttAdapter extends IoTAdapter {
       this.eventCallback!(event);
   }
   
-  sendDeviceCommand(command : any){
+  sendDeviceCommand(command : DeviceCommand){
       const mapper = this.deviceMappers.get(command.deviceId);
       if (!mapper)
         return;

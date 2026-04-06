@@ -12,8 +12,8 @@ module.exports = {
             env: {
                 NODE_ENV: 'production'
             },
-            error_file: '/root/solo-mte/logs/mte-device-entry-error.log',
-            out_file: '/root/solo-mte/logs/mte-device-entry-out.log',
+            error_file: '/root/logs/mte-device-entry-error.log',
+            out_file: '/root/logs/mte-device-entry-out.log',
             time: true
         }
     ]

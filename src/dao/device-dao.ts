@@ -1,4 +1,4 @@
-import { Device } from '../domain/device';
+import type { Device } from '@lowcode/shared-contracts/device';
 import { DeviceModel } from './schemas/device-schema';
 
 export class DeviceDAO {

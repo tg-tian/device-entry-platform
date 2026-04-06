@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { BaseDeviceModel } from '../../domain/model';
+import type { BaseDeviceModel } from '@lowcode/shared-contracts/device-model';
 
 interface IDevice extends Document {
   deviceId: string;

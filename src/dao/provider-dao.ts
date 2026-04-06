@@ -1,4 +1,4 @@
-import { ProviderConfig } from '../domain/provider-config';
+import type { ProviderConfig } from '@lowcode/shared-contracts/provider-config';
 import { ProviderModel } from './schemas/provider-schema';
 
 export class ProviderDAO {

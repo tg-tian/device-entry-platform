@@ -1,4 +1,5 @@
 import { UnifiedEvent } from '../domain/unified-event';
+import type { DeviceCommand } from '@lowcode/shared-contracts/device-command';
 
 export abstract class IoTAdapter {
   protected eventCallback: (event: UnifiedEvent) => void = () => {};
@@ -11,7 +12,7 @@ export abstract class IoTAdapter {
   abstract init():void;
   //abstract discoverDevices():void;
   //abstract registerDevice(device : any):void;
-  abstract sendDeviceCommand(command: any):void;
+  abstract sendDeviceCommand(command: DeviceCommand):void;
 
   setEventHandler(callback: (event: UnifiedEvent) => void): void {
     this.eventCallback = callback;

@@ -1,5 +1,6 @@
 import http from 'http'
 import { WebSocketServer } from 'ws'
+import type { WsMessage } from '@lowcode/shared-contracts/ws-message'
 import { DeviceManager } from '../device-manager/device-manager'
 
 export function startWsServer(dm: DeviceManager, server: http.Server) {
@@ -9,13 +10,16 @@ export function startWsServer(dm: DeviceManager, server: http.Server) {
   wss.on('connection', (ws) => {
     const discoveryHandler = (payload: any) => {
       console.log(`[WS] Sending discovery event: ${JSON.stringify(payload)}`)
-      ws.send(JSON.stringify({ topic: 'device.discovery', data: payload }))
+      const message: WsMessage = { topic: 'device.discovery', data: payload }
+      ws.send(JSON.stringify(message))
     }
     const updatedHandler = (payload: any) => {
-      ws.send(JSON.stringify({ topic: 'device.updated', data: payload }))
+      const message: WsMessage = { topic: 'device.updated', data: payload }
+      ws.send(JSON.stringify(message))
     }
     const eventHandler = (payload: any) => {
-      ws.send(JSON.stringify({ topic: 'device.event', data: payload }))
+      const message: WsMessage = { topic: 'device.event', data: payload }
+      ws.send(JSON.stringify(message))
     }
 
     dm.on('device.discovery', discoveryHandler)

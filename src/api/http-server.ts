@@ -4,7 +4,6 @@ import { DeviceDAO } from '../dao/device-dao'
 import { ShadowDAO } from '../dao/shadow-dao'
 import { ProviderDAO } from '../dao/provider-dao'
 import { DeviceManager } from '../device-manager/device-manager'
-import { model } from 'mongoose'
 
 export function startHttpServer(port: number, dm: DeviceManager) {
   const app = express()

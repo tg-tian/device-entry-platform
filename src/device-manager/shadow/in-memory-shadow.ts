@@ -1,4 +1,4 @@
-import { DeviceShadow } from '../../domain/device-shadow';
+import type { DeviceShadow } from '@lowcode/shared-contracts/device';
 import { ShadowManager } from './shadow-manager';
 import { ShadowDAO } from '../../dao/shadow-dao';
 
