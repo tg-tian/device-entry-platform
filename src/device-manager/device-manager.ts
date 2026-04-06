@@ -11,6 +11,9 @@ export class DeviceManager extends EventEmitter {
   private adapterFactory: AdapterFactory;
   private shadowManager: ShadowManager;
   private shadowDAO: ShadowDAO;
+  private offlineTimeoutMs = Number(process.env.DEVICE_OFFLINE_TIMEOUT_MS || 5000);
+  private offlineSweepIntervalMs = Number(process.env.DEVICE_OFFLINE_SWEEP_INTERVAL_MS || 5000);
+  private offlineSweepTimer: NodeJS.Timeout | null = null;
 
   constructor(adapterFactory: AdapterFactory) {
     super();
@@ -20,9 +23,9 @@ export class DeviceManager extends EventEmitter {
     for (const adapter of this.adapterFactory.listAdapters()) {
       adapter.setEventHandler((event) => this.handleDeviceEvent(event));
     }
+    this.startOfflineSweep();
   }
 
-  // 获取所有设�?
   async getAllDevices(): Promise<DeviceShadow[]> {
     return await this.shadowManager.getAll();
   }
@@ -46,6 +49,14 @@ export class DeviceManager extends EventEmitter {
     const shadow = await this.shadowManager.get(deviceId);
     if (shadow) 
       this.emit('device.updated', shadow);
+  }
+
+  async updateDeviceStatus(deviceId: string, isOnline: boolean): Promise<void> {
+    await this.shadowManager.updateStatus(deviceId, isOnline);
+    const shadow = await this.shadowManager.get(deviceId);
+    if (shadow) {
+      this.emit('device.updated', shadow);
+    }
   }
 
   async reportEvent(deviceId: string, payload: any, deviceModel?: string): Promise<void> {
@@ -78,7 +89,28 @@ export class DeviceManager extends EventEmitter {
     } else if (event.type === 'event') {
       console.log(`[DeviceManager] Reporting event for ${deviceId}`, event);
       this.reportEvent(deviceId, event.payload, event.deviceModel);
+    } else if (event.type === 'status') {
+      console.log(`[DeviceManager] Updating status for ${deviceId}:`, event.payload);
+      this.updateDeviceStatus(deviceId, !!event.payload?.isOnline);
     }
+  }
+
+  private startOfflineSweep(): void {
+    if (this.offlineSweepTimer) return;
+    this.offlineSweepTimer = setInterval(async () => {
+      try {
+        const all = await this.shadowManager.getAll();
+        const now = Date.now();
+        for (const shadow of all) {
+          const isStale = now - (shadow.metadata?.lastUpdated ?? 0) > this.offlineTimeoutMs;
+          if (shadow.metadata?.isOnline && isStale) {
+            await this.updateDeviceStatus(shadow.deviceId, false);
+          }
+        }
+      } catch (e) {
+        console.error('[DeviceManager] Offline sweep failed', e);
+      }
+    }, this.offlineSweepIntervalMs);
   }
 
   async flushNow(): Promise<void> {
