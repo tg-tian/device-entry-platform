@@ -1,4 +1,4 @@
-import type { DeviceShadow } from '@lowcode/shared-contracts/device';
+import type { DeviceShadow } from '@tgapk/lowcode-common/device';
 import { ShadowManager } from './shadow-manager';
 import { ShadowDAO } from '../../dao/shadow-dao';
 

@@ -1,4 +1,4 @@
-import type { ProviderConfig } from '@lowcode/shared-contracts/provider-config';
+import type { ProviderConfig } from '@tgapk/lowcode-common/provider-config';
 import { ProviderModel } from './schemas/provider-schema';
 
 export class ProviderDAO {

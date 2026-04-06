@@ -2,10 +2,10 @@ import axios from 'axios';
 import * as ts from 'typescript';
 import * as vm from 'vm';
 import * as mqtt from 'mqtt';
-import type { ProviderConfig } from '@lowcode/shared-contracts/provider-config';
+import type { ProviderConfig } from '@tgapk/lowcode-common/provider-config';
 import { DeviceMapper } from './device-mapper';
 
-import type { BaseDeviceModel } from '@lowcode/shared-contracts/device-model';
+import type { BaseDeviceModel } from '@tgapk/lowcode-common/device-model';
 
 export class MapperLoader {
 

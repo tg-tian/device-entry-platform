@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import type { BaseDeviceModel } from '@lowcode/shared-contracts/device-model';
+import type { BaseDeviceModel } from '@tgapk/lowcode-common/device-model';
 
 interface IDevice extends Document {
   deviceId: string;

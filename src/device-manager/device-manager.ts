@@ -2,9 +2,9 @@ import { EventEmitter } from 'events';
 import { AdapterFactory } from '../adapters/adapter-factory';
 import { ShadowManager } from './shadow/shadow-manager';
 import { InMemoryShadowManager } from './shadow/in-memory-shadow';
-import type { DeviceShadow } from '@lowcode/shared-contracts/device';
-import { UnifiedEvent } from '../domain/unified-event';
-import type { DeviceCommand } from '@lowcode/shared-contracts/device-command';
+import type { DeviceShadow } from '@tgapk/lowcode-common/device';
+import { UnifiedEvent } from '../model/unified-event';
+import type { DeviceCommand } from '@tgapk/lowcode-common/device-command';
 import { ShadowDAO } from '../dao/shadow-dao';
 
 export class DeviceManager extends EventEmitter {
@@ -22,7 +22,7 @@ export class DeviceManager extends EventEmitter {
     }
   }
 
-  // 获取所有设备
+  // 获取所有设�?
   async getAllDevices(): Promise<DeviceShadow[]> {
     return await this.shadowManager.getAll();
   }

@@ -1,5 +1,5 @@
-import { UnifiedEvent } from '../domain/unified-event';
-import type { DeviceCommand } from '@lowcode/shared-contracts/device-command';
+import { UnifiedEvent } from '../model/unified-event';
+import type { DeviceCommand } from '@tgapk/lowcode-common/device-command';
 
 export abstract class IoTAdapter {
   protected eventCallback: (event: UnifiedEvent) => void = () => {};

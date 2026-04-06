@@ -1,6 +1,6 @@
 import http from 'http'
 import { WebSocketServer } from 'ws'
-import type { WsMessage } from '@lowcode/shared-contracts/ws-message'
+import type { WsMessage } from '@tgapk/lowcode-common/ws-message'
 import { DeviceManager } from '../device-manager/device-manager'
 
 export function startWsServer(dm: DeviceManager, server: http.Server) {

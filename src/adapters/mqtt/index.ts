@@ -1,8 +1,8 @@
 import mqtt from 'mqtt';
 import { IoTAdapter } from '../iot-adapter';
-import type { ProviderConfig } from '@lowcode/shared-contracts/provider-config';
-import { UnifiedEvent } from '../../domain/unified-event';
-import type { DeviceCommand } from '@lowcode/shared-contracts/device-command';
+import type { ProviderConfig } from '@tgapk/lowcode-common/provider-config';
+import { UnifiedEvent } from '../../model/unified-event';
+import type { DeviceCommand } from '@tgapk/lowcode-common/device-command';
 import { DeviceMapper} from '../device-mapper';
 import { MapperLoader } from '../mapper-loader';
 

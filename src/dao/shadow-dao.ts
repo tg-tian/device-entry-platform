@@ -1,5 +1,5 @@
 import { DeviceShadowModel } from './schemas/device-shadow-schema';
-import type { DeviceShadow } from '@lowcode/shared-contracts/device';
+import type { DeviceShadow } from '@tgapk/lowcode-common/device';
 
 export class ShadowDAO {
   async saveShadow(shadow: DeviceShadow): Promise<void> {

@@ -1,4 +1,4 @@
-import type { Device } from '@lowcode/shared-contracts/device';
+import type { Device } from '@tgapk/lowcode-common/device';
 import { DeviceModel } from './schemas/device-schema';
 
 export class DeviceDAO {

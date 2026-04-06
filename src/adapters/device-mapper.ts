@@ -1,4 +1,4 @@
-import type { BaseDeviceModel } from '@lowcode/shared-contracts/device-model';
+import type { BaseDeviceModel } from '@tgapk/lowcode-common/device-model';
 
 export interface DeviceMapper {
   metaModel: BaseDeviceModel;
