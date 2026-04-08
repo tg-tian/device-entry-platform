@@ -3,6 +3,9 @@ import type { ProviderConfig } from '@tgapk/lowcode-common/provider-config';
 
 interface IProviderConfig extends ProviderConfig, Document {}
 
+/**
+ * 定义供应商接入配置在 MongoDB 中的存储结构。
+ */
 const ProviderConfigSchema = new Schema<IProviderConfig>({
   provider: { type: String, required: true, unique: true },
   communication: {
@@ -23,7 +26,7 @@ const ProviderConfigSchema = new Schema<IProviderConfig>({
     type: { type: String },
     ak: { type: String },
     sk: { type: String },
-    token: { type: String },
+    token: { type: String }
   }
 }, { timestamps: true });
 

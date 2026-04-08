@@ -19,6 +19,9 @@ interface IDevice extends Document {
   };
 }
 
+/**
+ * 定义设备实体在 MongoDB 中的存储结构。
+ */
 const DeviceSchema = new Schema<IDevice>({
   deviceId: { type: String, required: true, unique: true },
   provider: { type: String, required: true },

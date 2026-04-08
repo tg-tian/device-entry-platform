@@ -1,10 +1,13 @@
 import mqtt from 'mqtt';
-import { DeviceMapper} from '../device-mapper';
+import { DeviceMapper } from '../device-mapper';
 import type { ProviderConfig } from '@tgapk/lowcode-common/provider-config';
 import type { BaseDeviceModel } from '@tgapk/lowcode-common/device-model';
 
+/**
+ * 为空调设备提供 MQTT 属性、事件与命令映射。
+ */
 export class MqttACMapper implements DeviceMapper {
-  metaModel : BaseDeviceModel;
+  metaModel: BaseDeviceModel;
   deviceModel = 'HAIER-AC-1001';
   provider = 'mqtt';
   private client: mqtt.MqttClient;
@@ -21,7 +24,7 @@ export class MqttACMapper implements DeviceMapper {
         3: 'dry',
         4: 'auto'
       }
-    },
+    }
   };
 
   eventMap: Record<string, any> = {
@@ -44,22 +47,33 @@ export class MqttACMapper implements DeviceMapper {
           2: 'defrosting'
         }
       }
-    },
+    }
   };
 
-  constructor(config: ProviderConfig , metaModel: BaseDeviceModel) {
+  /**
+   * 创建空调设备映射器。
+   * @param config 供应商接入配置。
+   * @param metaModel 设备元模型定义。
+   */
+  constructor(config: ProviderConfig, metaModel: BaseDeviceModel) {
     this.cfg = config;
     this.metaModel = metaModel;
     this.client = mqtt.connect(this.cfg.communication.baseUrl);
   }
 
+  /**
+   * 按映射规则转换原始属性或事件字段。
+   * @param sourceData 原始数据对象。
+   * @param mapping 字段映射规则。
+   * @returns 转换后的统一数据对象。
+   */
   private processMapping(sourceData: any, mapping: any): Record<string, any> {
     const mappedData: Record<string, any> = {};
     for (const [key, value] of Object.entries(sourceData)) {
       const fieldMapping = mapping[key];
       if (!fieldMapping) {
         mappedData[key] = value;
-        continue; 
+        continue;
       }
       if (typeof fieldMapping === 'string') {
         mappedData[fieldMapping] = value;
@@ -75,23 +89,20 @@ export class MqttACMapper implements DeviceMapper {
     return mappedData;
   }
 
+  /**
+   * 将设备属性转换为平台统一属性结构。
+   * @param rawProps 设备原始属性数据。
+   * @returns 映射后的属性对象。
+   */
   mapProperties(rawProps: any): Record<string, any> {
     return this.processMapping(rawProps, this.propertyMap);
   }
 
-  // mapProperties(rawProps: any): Record<string, any> {
-  //   const mapped: Record<string, any> = {};
-  //   for (const [key, value] of Object.entries(rawProps)) {
-  //     const target = this.propertyMap[key as keyof typeof this.propertyMap];
-  //     if (target) {
-  //       mapped[target] = value;
-  //     } else {
-  //       mapped[key] = value;
-  //     }
-  //   }
-  //   return mapped;
-  // }
-
+  /**
+   * 将设备事件转换为平台统一事件结构。
+   * @param rawEvent 设备原始事件数据。
+   * @returns 映射后的事件对象。
+   */
   mapEvents(rawEvent: any): Record<string, any> {
     const result: Record<string, any> = {};
     for (const [key, value] of Object.entries(rawEvent)) {
@@ -104,13 +115,19 @@ export class MqttACMapper implements DeviceMapper {
     return result;
   }
 
+  /**
+   * 下发空调模式设置命令。
+   * @param deviceId 设备标识。
+   * @param args 模式参数，mode 为目标模式。
+   * @returns 无返回值。
+   */
   setMode(deviceId: string, args: { mode: string }): void {
     const modeMap: Record<string, number> = {
-      'cool': 0,
-      'heat': 1,
-      'fan': 2,
-      'dry': 3,
-      'auto': 4
+      cool: 0,
+      heat: 1,
+      fan: 2,
+      dry: 3,
+      auto: 4
     };
     const modeVal = modeMap[args.mode];
     if (modeVal !== undefined) {
@@ -118,6 +135,13 @@ export class MqttACMapper implements DeviceMapper {
       this.client.publish(`devices/${deviceId}/command`, JSON.stringify(payload));
     }
   }
+
+  /**
+   * 下发空调温度设置命令。
+   * @param deviceId 设备标识。
+   * @param args 温度参数，temp 为目标温度。
+   * @returns 无返回值。
+   */
   setTemperature(deviceId: string, args: { temp: number }): void {
     const payload = { action: 'setTemperature', args };
     this.client.publish(`devices/${deviceId}/command`, JSON.stringify(payload));

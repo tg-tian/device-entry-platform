@@ -18,6 +18,9 @@ interface IDeviceShadow extends Document {
   };
 }
 
+/**
+ * 定义设备影子在 MongoDB 中的存储结构。
+ */
 const DeviceShadowSchema = new Schema<IDeviceShadow>({
   deviceId: { type: String, required: true, unique: true },
   provider: { type: String, default: 'unknown' },

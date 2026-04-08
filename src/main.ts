@@ -10,7 +10,11 @@ dotenv.config();
 
 const PORT = (process.env.PORT || 3000) as number;
 
-async function bootstrap() {
+/**
+ * 启动设备接入平台的核心运行时。
+ * @returns 应用启动完成后的 Promise。
+ */
+async function bootstrap(): Promise<void> {
   await connectDB();
   const providerDAO = new ProviderDAO();
   const adapterFactory = new AdapterFactory(providerDAO);

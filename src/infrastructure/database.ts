@@ -1,5 +1,9 @@
 import mongoose from 'mongoose';
 
+/**
+ * 连接 MongoDB 并在失败时终止进程。
+ * @returns 数据库连接完成后的 Promise。
+ */
 export const connectDB = async (): Promise<void> => {
   try {
     const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/device-entry';
@@ -10,7 +14,7 @@ export const connectDB = async (): Promise<void> => {
     };
     if (user) options.user = user;
     if (pass) options.pass = pass;
-    
+
     await mongoose.connect(mongoURI, options);
     console.log('MongoDB Connected...');
   } catch (err) {
