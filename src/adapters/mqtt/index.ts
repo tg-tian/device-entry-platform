@@ -97,15 +97,28 @@ export class MqttAdapter extends IoTAdapter {
   }
 
   private async applyMapperForDevice(deviceId: string, rawDevice: any): Promise<void> {
-    const selectedMapper = await this.mapperLoader.loadMapper(rawDevice, this.config);
+    const result = await this.mapperLoader.loadMapperWithReason(rawDevice, this.config);
+    const selectedMapper = result.mapper;
     let payload: any;
 
     if (selectedMapper) {
       this.deviceMappers.set(deviceId, selectedMapper);
-      payload = { ...rawDevice, isAccessible: true, metaModel: selectedMapper.metaModel };
+      payload = {
+        ...rawDevice,
+        isAccessible: true,
+        metaModel: selectedMapper.metaModel,
+        inaccessibleReason: undefined,
+        inaccessibleMessage: undefined
+      };
     } else {
       this.deviceMappers.delete(deviceId);
-      payload = { ...rawDevice, isAccessible: false, metaModel: undefined };
+      payload = {
+        ...rawDevice,
+        isAccessible: false,
+        metaModel: undefined,
+        inaccessibleReason: result.reason,
+        inaccessibleMessage: result.message
+      };
     }
 
     const event: UnifiedEvent = {
