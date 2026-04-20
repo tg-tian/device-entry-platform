@@ -37,4 +37,12 @@ export abstract class IoTAdapter {
   setEventHandler(callback: (event: UnifiedEvent) => void): void {
     this.eventCallback = callback;
   }
+
+  /**
+   * 在运行时刷新设备映射器库并重新应用到当前设备。
+   * @returns 刷新完成后的 Promise 或同步结果。
+   */
+  refreshMapperLibrary(): void | Promise<void> {
+    // 默认适配器无需处理，子类按需覆盖。
+  }
 }

@@ -13,6 +13,7 @@ export class MqttAdapter extends IoTAdapter {
   private client: mqtt.MqttClient | undefined;
   private config: ProviderConfig;
   private deviceMappers: Map<string, DeviceMapper | null> = new Map();
+  private rawDeviceConfigs: Map<string, any> = new Map();
   private mapperLoader: MapperLoader;
 
   /**
@@ -90,20 +91,27 @@ export class MqttAdapter extends IoTAdapter {
    */
   async discoverDevice(deviceId: string, payload: Buffer): Promise<void> {
     const msgStr = payload.toString();
-    let raw = JSON.parse(msgStr);
-    const selectedMapper = await this.mapperLoader.loadMapper(raw, this.config);
+    const raw = JSON.parse(msgStr);
+    this.rawDeviceConfigs.set(deviceId, raw);
+    await this.applyMapperForDevice(deviceId, raw);
+  }
+
+  private async applyMapperForDevice(deviceId: string, rawDevice: any): Promise<void> {
+    const selectedMapper = await this.mapperLoader.loadMapper(rawDevice, this.config);
+    let payload: any;
 
     if (selectedMapper) {
       this.deviceMappers.set(deviceId, selectedMapper);
-      raw = { ...raw, isAccessible: true, metaModel: selectedMapper.metaModel };
+      payload = { ...rawDevice, isAccessible: true, metaModel: selectedMapper.metaModel };
     } else {
-      raw = { ...raw, isAccessible: false };
+      this.deviceMappers.delete(deviceId);
+      payload = { ...rawDevice, isAccessible: false, metaModel: undefined };
     }
 
     const event: UnifiedEvent = {
       type: 'config',
-      deviceId: deviceId,
-      payload: raw
+      deviceId,
+      payload
     };
     this.eventCallback!(event);
   }
@@ -164,5 +172,13 @@ export class MqttAdapter extends IoTAdapter {
       return;
     }
     (mapper as any)[command.action](command.deviceId, command.params);
+  }
+
+  async refreshMapperLibrary(): Promise<void> {
+    console.log(`[MqttAdapter] Refreshing mapper library for provider: ${this.provider}`);
+    this.deviceMappers.clear();
+    for (const [deviceId, rawConfig] of this.rawDeviceConfigs.entries()) {
+      await this.applyMapperForDevice(deviceId, rawConfig);
+    }
   }
 }

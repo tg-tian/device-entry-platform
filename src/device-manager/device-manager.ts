@@ -172,4 +172,12 @@ export class DeviceManager extends EventEmitter {
       await this.shadowDAO.saveShadow(shadow);
     }
   }
+
+  /**
+   * 在运行时刷新全部适配器的 mapper 库并重新应用到当前设备。
+   * @returns 刷新完成后的 Promise。
+   */
+  async refreshMapperLibrary(): Promise<void> {
+    await this.adapterFactory.refreshMapperLibrary();
+  }
 }

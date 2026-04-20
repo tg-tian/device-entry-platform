@@ -3,6 +3,7 @@ import http from 'http';
 import { DeviceDAO } from '../dao/device-dao';
 import { ShadowDAO } from '../dao/shadow-dao';
 import { ProviderDAO } from '../dao/provider-dao';
+import { SystemConfigDAO } from '../dao/system-config-dao';
 import { DeviceManager } from '../device-manager/device-manager';
 
 /**
@@ -17,6 +18,7 @@ export function startHttpServer(port: number, dm: DeviceManager): http.Server {
   const deviceDAO = new DeviceDAO();
   const shadowDAO = new ShadowDAO();
   const providerDAO = new ProviderDAO();
+  const systemConfigDAO = new SystemConfigDAO();
 
   app.get('/deviceShadows', async (_req, res) => {
     const shadows = await shadowDAO.getAllShadows();
@@ -111,6 +113,29 @@ export function startHttpServer(port: number, dm: DeviceManager): http.Server {
   app.get('/discoverDevices', async (_req, res) => {
     const list = await dm.getAllDevices();
     res.json(list);
+  });
+
+  app.get('/system/mapper-loader-url', async (_req, res) => {
+    try {
+      const url = await systemConfigDAO.getMapperLoaderUrl() || process.env.MAPPER_LOADER_URL || '';
+      res.json({ url });
+    } catch (e) {
+      res.status(400).json({ ok: false, error: String(e) });
+    }
+  });
+
+  app.put('/system/mapper-loader-url', async (req, res) => {
+    try {
+      const url = String(req.body?.url || '').trim();
+      if (!url) {
+        return res.status(400).json({ ok: false, error: 'Missing url' });
+      }
+      await systemConfigDAO.setMapperLoaderUrl(url);
+      await dm.refreshMapperLibrary();
+      res.json({ ok: true, url });
+    } catch (e) {
+      res.status(400).json({ ok: false, error: String(e) });
+    }
   });
 
   app.post('/devices/command', async (req, res) => {

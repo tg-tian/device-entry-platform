@@ -59,4 +59,14 @@ export class AdapterFactory {
   listAdapters(): IoTAdapter[] {
     return Array.from(this.adapters.values());
   }
+
+  /**
+   * 通知全部适配器刷新设备映射器库。
+   * @returns 刷新完成后的 Promise。
+   */
+  async refreshMapperLibrary(): Promise<void> {
+    for (const adapter of this.adapters.values()) {
+      await adapter.refreshMapperLibrary();
+    }
+  }
 }
