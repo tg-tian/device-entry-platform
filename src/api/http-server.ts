@@ -25,7 +25,14 @@ export function startHttpServer(port: number, dm: DeviceManager): http.Server {
     res.json(shadows);
   });
 
-  app.get('/devices', async (_req, res) => {
+  app.get('/devices', async (req, res) => {
+    const id = req.query.id as string | undefined;
+    if (id) {
+      const d = await deviceDAO.getDevice(id);
+      if (!d) return res.status(404).json({ message: 'not found' });
+      return res.json(d);
+    }
+
     const devices = await deviceDAO.getAllDevices();
     res.json(devices);
   });
