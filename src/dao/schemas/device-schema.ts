@@ -8,6 +8,8 @@ interface IDevice extends Document {
   deviceName?: string;
   isAccessible: boolean;
   metaModel?: BaseDeviceModel;
+  pointX?: number | null;
+  pointY?: number | null;
   state: {
     reported: Record<string, any>;
     desired: Record<string, any>;
@@ -29,6 +31,8 @@ const DeviceSchema = new Schema<IDevice>({
   deviceName: { type: String },
   isAccessible: { type: Boolean, default: false },
   metaModel: { type: Schema.Types.Mixed },
+  pointX: { type: Number, default: null },
+  pointY: { type: Number, default: null },
   state: {
     reported: { type: Schema.Types.Mixed, default: {} },
     desired: { type: Schema.Types.Mixed, default: {} }
